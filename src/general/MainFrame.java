@@ -15,6 +15,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -50,6 +51,7 @@ public class MainFrame extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Dashboard.setBorder(javax.swing.BorderFactory.createTitledBorder("Dashboard"));
 
