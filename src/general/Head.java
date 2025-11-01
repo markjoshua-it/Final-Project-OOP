@@ -13,13 +13,14 @@ import javax.swing.ImageIcon;
 public class Head extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Head.class.getName());
-
+    private ImageIcon icon = new ImageIcon("src\\img\\world_leader.png");
     /**
      * Creates new form Head
      */
     public Head() {
         initComponents();
         this.setIconImage(icon.getImage());
+        this.setLocationRelativeTo(null);
       
     }
 
@@ -165,7 +166,7 @@ public class Head extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new Head().setVisible(true));
     }
-    private ImageIcon icon = new ImageIcon("src\\img\\world_leader.png");
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
