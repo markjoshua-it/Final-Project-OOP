@@ -20,7 +20,7 @@ public class Head extends javax.swing.JFrame {
     public Head() {
         initComponents();
         this.setIconImage(icon.getImage());
-        this.setLocationRelativeTo(null);
+      
     }
 
     /**
