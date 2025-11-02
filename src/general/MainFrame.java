@@ -28,7 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
     String leaderFN = txtFN.getText();
     String leaderMI = txtMI.getText();
     String leaderLN = txtLN.getText();
-    String gender = cbGender.getSelectedItem().toString();
+    String gender = cmbGender.getSelectedItem().toString();
 
     
     int leaderID;
@@ -68,11 +68,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         Dashboard = new javax.swing.JPanel();
-        btAssign = new javax.swing.JButton();
+        btnDepartment = new javax.swing.JButton();
         MainTitle = new javax.swing.JLabel();
         LeaderList = new javax.swing.JLabel();
-        btNation = new javax.swing.JButton();
-        btExport = new javax.swing.JButton();
+        btnNation = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         Fields = new javax.swing.JPanel();
         txtLID = new javax.swing.JTextField();
         lLeaderID = new javax.swing.JLabel();
@@ -85,11 +85,11 @@ public class MainFrame extends javax.swing.JFrame {
         lAge = new javax.swing.JLabel();
         lBirthdate = new javax.swing.JLabel();
         lGender = new javax.swing.JLabel();
-        cbGender = new javax.swing.JComboBox<>();
+        cmbGender = new javax.swing.JComboBox<>();
         txtAge = new javax.swing.JTextField();
-        btSaveRecord = new javax.swing.JButton();
-        btUpdateRecord = new javax.swing.JButton();
-        btDeleteRecord = new javax.swing.JButton();
+        btnSaveRecord = new javax.swing.JButton();
+        btnUpdateRecord = new javax.swing.JButton();
+        btnDeleteRecord = new javax.swing.JButton();
         lSelectedLeadID = new javax.swing.JLabel();
         lStatus = new javax.swing.JLabel();
         dcBirthdate = new com.toedter.calendar.JDateChooser();
@@ -103,13 +103,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         Dashboard.setBorder(javax.swing.BorderFactory.createTitledBorder("Dashboard"));
 
-        btAssign.setText("Go to Assign Officer");
-        btAssign.setActionCommand("Go to Leader");
-        btAssign.setFocusable(false);
-        btAssign.setPreferredSize(new java.awt.Dimension(135, 20));
-        btAssign.addActionListener(new java.awt.event.ActionListener() {
+        btnDepartment.setText("Go to Assign Department");
+        btnDepartment.setActionCommand("Go to Leader");
+        btnDepartment.setFocusable(false);
+        btnDepartment.setPreferredSize(new java.awt.Dimension(135, 20));
+        btnDepartment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAssignActionPerformed(evt);
+                btnDepartmentActionPerformed(evt);
             }
         });
 
@@ -120,23 +120,23 @@ public class MainFrame extends javax.swing.JFrame {
 
         LeaderList.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         LeaderList.setForeground(new java.awt.Color(0, 0, 0));
-        LeaderList.setText("/  Leader List");
+        LeaderList.setText("/  Assign Leader");
 
-        btNation.setText("Go to Nation List");
-        btNation.setFocusable(false);
-        btNation.setPreferredSize(new java.awt.Dimension(135, 20));
-        btNation.addActionListener(new java.awt.event.ActionListener() {
+        btnNation.setText("Go to Nation List");
+        btnNation.setFocusable(false);
+        btnNation.setPreferredSize(new java.awt.Dimension(135, 20));
+        btnNation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btNationActionPerformed(evt);
+                btnNationActionPerformed(evt);
             }
         });
 
-        btExport.setText("Export Data");
-        btExport.setFocusable(false);
-        btExport.setPreferredSize(new java.awt.Dimension(135, 20));
-        btExport.addActionListener(new java.awt.event.ActionListener() {
+        btnExport.setText("Export Data");
+        btnExport.setFocusable(false);
+        btnExport.setPreferredSize(new java.awt.Dimension(135, 20));
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btExportActionPerformed(evt);
+                btnExportActionPerformed(evt);
             }
         });
 
@@ -181,11 +181,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         lGender.setText("Gender");
 
-        cbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Famale" }));
-        cbGender.setFocusable(false);
-        cbGender.addActionListener(new java.awt.event.ActionListener() {
+        cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Famale" }));
+        cmbGender.setFocusable(false);
+        cmbGender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbGenderActionPerformed(evt);
+                cmbGenderActionPerformed(evt);
             }
         });
 
@@ -195,27 +195,27 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        btSaveRecord.setText("Save Record");
-        btSaveRecord.setFocusable(false);
-        btSaveRecord.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveRecord.setText("Save Record");
+        btnSaveRecord.setFocusable(false);
+        btnSaveRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btSaveRecordActionPerformed(evt);
+                btnSaveRecordActionPerformed(evt);
             }
         });
 
-        btUpdateRecord.setText("Update Record");
-        btUpdateRecord.setFocusable(false);
-        btUpdateRecord.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdateRecord.setText("Update Record");
+        btnUpdateRecord.setFocusable(false);
+        btnUpdateRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btUpdateRecordActionPerformed(evt);
+                btnUpdateRecordActionPerformed(evt);
             }
         });
 
-        btDeleteRecord.setText("Delete Record");
-        btDeleteRecord.setFocusable(false);
-        btDeleteRecord.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteRecord.setText("Delete Record");
+        btnDeleteRecord.setFocusable(false);
+        btnDeleteRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDeleteRecordActionPerformed(evt);
+                btnDeleteRecordActionPerformed(evt);
             }
         });
 
@@ -246,7 +246,7 @@ public class MainFrame extends javax.swing.JFrame {
                             .addGroup(FieldsLayout.createSequentialGroup()
                                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lGender)
-                                    .addComponent(cbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(cmbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(FieldsLayout.createSequentialGroup()
@@ -261,9 +261,9 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btSaveRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btUpdateRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btDeleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(btnSaveRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnUpdateRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDeleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(14, 14, 14))
         );
         FieldsLayout.setVerticalGroup(
@@ -294,18 +294,18 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(lBirthdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dcBirthdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lSelectedLeadID)
                     .addComponent(lStatus))
                 .addGap(18, 18, 18)
-                .addComponent(btSaveRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSaveRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btUpdateRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnUpdateRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btDeleteRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDeleteRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7))
         );
 
@@ -313,10 +313,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Leader ID", "Fullname", "Address", "Gender", "Birthdate"
@@ -345,7 +342,7 @@ public class MainFrame extends javax.swing.JFrame {
             ListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ListLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(theTable)
+                .addComponent(theTable, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE)
                 .addContainerGap())
         );
         ListLayout.setVerticalGroup(
@@ -371,29 +368,32 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(MainTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(LeaderList)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
-                        .addComponent(btAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNation, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20)
-                        .addComponent(btNation, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
-                        .addComponent(btExport, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         DashboardLayout.setVerticalGroup(
             DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(DashboardLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(MainTitle)
-                    .addComponent(LeaderList)
-                    .addComponent(btAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btNation, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btExport, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DashboardLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(MainTitle)
+                            .addComponent(LeaderList)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnNation, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(Fields, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(List, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -416,24 +416,24 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAssignActionPerformed
+    private void btnDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentActionPerformed
         // TODO add your handling code here:
         Head head = new Head();
         head.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btAssignActionPerformed
+    }//GEN-LAST:event_btnDepartmentActionPerformed
 
-    private void btNationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNationActionPerformed
+    private void btnNationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNationActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btNationActionPerformed
+    }//GEN-LAST:event_btnNationActionPerformed
 
     private void txtLIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLIDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtLIDActionPerformed
 
-    private void btExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportActionPerformed
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btExportActionPerformed
+    }//GEN-LAST:event_btnExportActionPerformed
 
     private void txtLNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLNActionPerformed
         // TODO add your handling code here:
@@ -451,22 +451,22 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAgeActionPerformed
 
-    private void cbGenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbGenderActionPerformed
+    private void cmbGenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGenderActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbGenderActionPerformed
+    }//GEN-LAST:event_cmbGenderActionPerformed
 
-    private void btSaveRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveRecordActionPerformed
+    private void btnSaveRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRecordActionPerformed
         // TODO add your handling code here:
         addData();
-    }//GEN-LAST:event_btSaveRecordActionPerformed
+    }//GEN-LAST:event_btnSaveRecordActionPerformed
 
-    private void btDeleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteRecordActionPerformed
+    private void btnDeleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteRecordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btDeleteRecordActionPerformed
+    }//GEN-LAST:event_btnDeleteRecordActionPerformed
 
-    private void btUpdateRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateRecordActionPerformed
+    private void btnUpdateRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateRecordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btUpdateRecordActionPerformed
+    }//GEN-LAST:event_btnUpdateRecordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -509,13 +509,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel LeaderList;
     private javax.swing.JPanel List;
     private javax.swing.JLabel MainTitle;
-    private javax.swing.JButton btAssign;
-    private javax.swing.JButton btDeleteRecord;
-    private javax.swing.JButton btExport;
-    private javax.swing.JButton btNation;
-    private javax.swing.JButton btSaveRecord;
-    private javax.swing.JButton btUpdateRecord;
-    private javax.swing.JComboBox<String> cbGender;
+    private javax.swing.JButton btnDeleteRecord;
+    private javax.swing.JButton btnDepartment;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JButton btnNation;
+    private javax.swing.JButton btnSaveRecord;
+    private javax.swing.JButton btnUpdateRecord;
+    private javax.swing.JComboBox<String> cmbGender;
     private com.toedter.calendar.JDateChooser dcBirthdate;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lAge;
