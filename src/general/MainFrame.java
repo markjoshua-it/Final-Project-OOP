@@ -6,6 +6,7 @@
 package general;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,6 +17,40 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    private void addData() {
+    if (txtFN.getText().isEmpty() || txtMI.getText().isEmpty() || txtLN.getText().isEmpty() ||
+        txtLID.getText().isEmpty() || txtAge.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        return;
+    }
+
+  
+    String leaderFN = txtFN.getText();
+    String leaderMI = txtMI.getText();
+    String leaderLN = txtLN.getText();
+    String gender = cbGender.getSelectedItem().toString();
+
+    
+    int leaderID;
+    int leaderAge;
+
+    try {
+        leaderID = Integer.parseInt(txtLID.getText());
+        leaderAge = Integer.parseInt(txtAge.getText());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Leader ID and Age must be numbers!");
+        return; 
+    }
+    
+    
+    
+    
+    
+
+}
+
+      
+  
     public MainFrame() {
         initComponents();
         this.setIconImage(icon.getImage());
@@ -33,33 +68,33 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         Dashboard = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btAssign = new javax.swing.JButton();
         MainTitle = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        LeaderList = new javax.swing.JLabel();
+        btNation = new javax.swing.JButton();
+        btExport = new javax.swing.JButton();
         Fields = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField5 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        txtLID = new javax.swing.JTextField();
+        lLeaderID = new javax.swing.JLabel();
+        lFirstName = new javax.swing.JLabel();
+        lMiddleIni = new javax.swing.JLabel();
+        lLastName = new javax.swing.JLabel();
+        txtFN = new javax.swing.JTextField();
+        txtMI = new javax.swing.JTextField();
+        txtLN = new javax.swing.JTextField();
+        lAge = new javax.swing.JLabel();
+        lBirthdate = new javax.swing.JLabel();
+        lGender = new javax.swing.JLabel();
+        cbGender = new javax.swing.JComboBox<>();
+        txtAge = new javax.swing.JTextField();
+        btSaveRecord = new javax.swing.JButton();
+        btUpdateRecord = new javax.swing.JButton();
+        btDeleteRecord = new javax.swing.JButton();
+        lSelectedLeadID = new javax.swing.JLabel();
+        lStatus = new javax.swing.JLabel();
+        dcBirthdate = new com.toedter.calendar.JDateChooser();
         List = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        theTable = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -68,13 +103,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         Dashboard.setBorder(javax.swing.BorderFactory.createTitledBorder("Dashboard"));
 
-        jButton1.setText("Go to Assign Officer");
-        jButton1.setActionCommand("Go to Leader");
-        jButton1.setFocusable(false);
-        jButton1.setPreferredSize(new java.awt.Dimension(135, 20));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btAssign.setText("Go to Assign Officer");
+        btAssign.setActionCommand("Go to Leader");
+        btAssign.setFocusable(false);
+        btAssign.setPreferredSize(new java.awt.Dimension(135, 20));
+        btAssign.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btAssignActionPerformed(evt);
             }
         });
 
@@ -83,111 +118,111 @@ public class MainFrame extends javax.swing.JFrame {
         MainTitle.setForeground(new java.awt.Color(0, 0, 0));
         MainTitle.setText("World Leaders Tracker");
 
-        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel10.setText("/  Leader List");
+        LeaderList.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        LeaderList.setForeground(new java.awt.Color(0, 0, 0));
+        LeaderList.setText("/  Leader List");
 
-        jButton2.setText("Go to Nation List");
-        jButton2.setFocusable(false);
-        jButton2.setPreferredSize(new java.awt.Dimension(135, 20));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btNation.setText("Go to Nation List");
+        btNation.setFocusable(false);
+        btNation.setPreferredSize(new java.awt.Dimension(135, 20));
+        btNation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btNationActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Export Data");
-        jButton4.setFocusable(false);
-        jButton4.setPreferredSize(new java.awt.Dimension(135, 20));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btExport.setText("Export Data");
+        btExport.setFocusable(false);
+        btExport.setPreferredSize(new java.awt.Dimension(135, 20));
+        btExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btExportActionPerformed(evt);
             }
         });
 
         Fields.setBorder(javax.swing.BorderFactory.createTitledBorder("Fields"));
 
-        jTextField1.setPreferredSize(new java.awt.Dimension(65, 25));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtLID.setPreferredSize(new java.awt.Dimension(65, 25));
+        txtLID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtLIDActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Leader ID");
+        lLeaderID.setText("Leader ID");
 
-        jLabel2.setText("First Name");
+        lFirstName.setText("First Name");
 
-        jLabel3.setText("Middle Initial");
+        lMiddleIni.setText("Middle Initial");
 
-        jLabel4.setText("Last Name");
+        lLastName.setText("Last Name");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        txtFN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                txtFNActionPerformed(evt);
             }
         });
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        txtMI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                txtMIActionPerformed(evt);
             }
         });
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        txtLN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                txtLNActionPerformed(evt);
             }
         });
 
-        jLabel5.setText("Age");
+        lAge.setText("Age");
 
-        jLabel6.setText("Birthdate");
+        lBirthdate.setText("Birthdate");
 
-        jLabel7.setText("Gender");
+        lGender.setText("Gender");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Famale" }));
-        jComboBox1.setFocusable(false);
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        cbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Famale" }));
+        cbGender.setFocusable(false);
+        cbGender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                cbGenderActionPerformed(evt);
             }
         });
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        txtAge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                txtAgeActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Save Record");
-        jButton3.setFocusable(false);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btSaveRecord.setText("Save Record");
+        btSaveRecord.setFocusable(false);
+        btSaveRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btSaveRecordActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Update Record");
-        jButton5.setFocusable(false);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btUpdateRecord.setText("Update Record");
+        btUpdateRecord.setFocusable(false);
+        btUpdateRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btUpdateRecordActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Delete Record");
-        jButton6.setFocusable(false);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btDeleteRecord.setText("Delete Record");
+        btDeleteRecord.setFocusable(false);
+        btDeleteRecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btDeleteRecordActionPerformed(evt);
             }
         });
 
-        jLabel8.setText("Selected Leader ID:");
+        lSelectedLeadID.setText("Selected Leader ID:");
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel9.setText("None");
+        lStatus.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lStatus.setText("None");
 
         javax.swing.GroupLayout FieldsLayout = new javax.swing.GroupLayout(Fields);
         Fields.setLayout(FieldsLayout);
@@ -198,79 +233,79 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField4)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
+                            .addComponent(txtAge, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtLID, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtMI)
+                            .addComponent(txtFN)
+                            .addComponent(txtLN)
+                            .addComponent(lLeaderID, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lMiddleIni)
+                            .addComponent(lLastName)
+                            .addComponent(lAge)
                             .addGroup(FieldsLayout.createSequentialGroup()
                                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lGender)
+                                    .addComponent(cbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(FieldsLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
+                                        .addComponent(lBirthdate)
                                         .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)))))
+                                    .addComponent(dcBirthdate, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)))))
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addComponent(jLabel8)
+                        .addComponent(lSelectedLeadID)
                         .addGap(26, 26, 26)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(btSaveRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btUpdateRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btDeleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(14, 14, 14))
         );
         FieldsLayout.setVerticalGroup(
             FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FieldsLayout.createSequentialGroup()
-                .addComponent(jLabel1)
+                .addComponent(lLeaderID)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtLID, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
+                .addComponent(lFirstName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(lMiddleIni)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMI, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
+                .addComponent(lLastName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtLN, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5)
+                .addComponent(lAge)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtAge, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel6))
+                    .addComponent(lGender)
+                    .addComponent(lBirthdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dcBirthdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
+                    .addComponent(lSelectedLeadID)
+                    .addComponent(lStatus))
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btSaveRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btUpdateRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btDeleteRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7))
         );
 
@@ -295,7 +330,7 @@ public class MainFrame extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        theTable.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
             jTable1.getColumnModel().getColumn(1).setPreferredWidth(130);
@@ -310,14 +345,14 @@ public class MainFrame extends javax.swing.JFrame {
             ListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ListLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+                .addComponent(theTable)
                 .addContainerGap())
         );
         ListLayout.setVerticalGroup(
             ListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ListLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jScrollPane1)
+                .addComponent(theTable)
                 .addGap(5, 5, 5))
         );
 
@@ -331,18 +366,17 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(DashboardLayout.createSequentialGroup()
                         .addComponent(Fields, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(List, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(List, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(DashboardLayout.createSequentialGroup()
                         .addComponent(MainTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(LeaderList)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
+                        .addComponent(btAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btNation, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btExport, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         DashboardLayout.setVerticalGroup(
@@ -351,10 +385,10 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(MainTitle)
-                    .addComponent(jLabel10)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(LeaderList)
+                    .addComponent(btAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btNation, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btExport, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(Fields, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -382,56 +416,57 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAssignActionPerformed
         // TODO add your handling code here:
         Head head = new Head();
         head.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btAssignActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btNationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNationActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btNationActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtLIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtLIDActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btExportActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void txtLNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLNActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_txtLNActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void txtMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMIActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_txtMIActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void txtFNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFNActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_txtFNActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void txtAgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAgeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_txtAgeActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void cbGenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbGenderActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_cbGenderActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btSaveRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveRecordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        addData();
+    }//GEN-LAST:event_btSaveRecordActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btDeleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteRecordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btDeleteRecordActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btUpdateRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateRecordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btUpdateRecordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -471,32 +506,32 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Dashboard;
     private javax.swing.JPanel Fields;
+    private javax.swing.JLabel LeaderList;
     private javax.swing.JPanel List;
     private javax.swing.JLabel MainTitle;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton btAssign;
+    private javax.swing.JButton btDeleteRecord;
+    private javax.swing.JButton btExport;
+    private javax.swing.JButton btNation;
+    private javax.swing.JButton btSaveRecord;
+    private javax.swing.JButton btUpdateRecord;
+    private javax.swing.JComboBox<String> cbGender;
+    private com.toedter.calendar.JDateChooser dcBirthdate;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JLabel lAge;
+    private javax.swing.JLabel lBirthdate;
+    private javax.swing.JLabel lFirstName;
+    private javax.swing.JLabel lGender;
+    private javax.swing.JLabel lLastName;
+    private javax.swing.JLabel lLeaderID;
+    private javax.swing.JLabel lMiddleIni;
+    private javax.swing.JLabel lSelectedLeadID;
+    private javax.swing.JLabel lStatus;
+    private javax.swing.JScrollPane theTable;
+    private javax.swing.JTextField txtAge;
+    private javax.swing.JTextField txtFN;
+    private javax.swing.JTextField txtLID;
+    private javax.swing.JTextField txtLN;
+    private javax.swing.JTextField txtMI;
     // End of variables declaration//GEN-END:variables
 }
