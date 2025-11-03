@@ -84,6 +84,7 @@ public class Leader extends javax.swing.JFrame {
             txtMI.setText("");
             txtLN.setText("");
             txtAge.setText("");
+            dcBirthdate.setCalendar(null);
             
             loadLeaderData();
             con.close();
@@ -134,49 +135,51 @@ public class Leader extends javax.swing.JFrame {
         ){
             JOptionPane.showMessageDialog(null, "Please fill all fields!");
             return;
-        }
-        String leaderID = txtLID.getText();
-        String fname = txtFN.getText();
-        String mi = txtMI.getText();
-        String lname = txtLN.getText();
-        int age = 0;
-        String gender = cmbGender.getSelectedItem().toString();
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = date_format.format(dcBirthdate.getDate());
-        int selectedRow = tblLeader.getSelectedRow();
-        String id = (String) tblLeader.getValueAt(selectedRow, 0);
-        System.out.println(selectedRow);
-        System.out.println(id);
-        
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-        }
-        try {
-            age = Integer.parseInt(txtAge.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Field must be a number.");
-        }
-        
-        Connection con = (Connection) DBConnection.getConnection();
-        try {
-            String sql = "UPDATE Leader SET leaderID=?, fname=?, mi=?,lname=?, bdate=?, age=?, gender=? WHERE leaderID=?";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            Object[] params = {leaderID, fname, mi, lname, date, age, gender, id};
+        }else{
+            String leaderID = txtLID.getText();
+            String fname = txtFN.getText();
+            String mi = txtMI.getText();
+            String lname = txtLN.getText();
+            int age = 0;
+            String gender = cmbGender.getSelectedItem().toString();
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+            String date = date_format.format(dcBirthdate.getDate());
+            int selectedRow = tblLeader.getSelectedRow();
+            String id = (String) tblLeader.getValueAt(selectedRow, 0);
+            System.out.println(selectedRow);
+            System.out.println(id);
 
-            for (int i = 0; i < params.length; i++) {
-                pstmt.setObject(i + 1, params[i]);
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a record to delete.");
             }
-            pstmt.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Record deleted successfully!");
-            txtLID.setText("");
-            txtFN.setText("");
-            txtMI.setText("");
-            txtLN.setText("");
-            txtAge.setText("");
-            con.close();
-            loadLeaderData();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+            try {
+                age = Integer.parseInt(txtAge.getText());
+                Connection con = (Connection) DBConnection.getConnection();
+                try {
+                    String sql = "UPDATE Leader SET leaderID=?, fname=?, mi=?,lname=?, bdate=?, age=?, gender=? WHERE leaderID=?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    Object[] params = {leaderID, fname, mi, lname, date, age, gender, id};
+
+                    for (int i = 0; i < params.length; i++) {
+                        pstmt.setObject(i + 1, params[i]);
+                    }
+                    pstmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Record updated successfully!");
+                    txtLID.setText("");
+                    txtFN.setText("");
+                    txtMI.setText("");
+                    txtLN.setText("");
+                    txtAge.setText("");
+                    dcBirthdate.setCalendar(null);
+                    con.close();
+                    loadLeaderData();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Field must be a number.");
+            }
+
         }
         
     }
@@ -451,8 +454,9 @@ public class Leader extends javax.swing.JFrame {
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(lSelectedLeadID)
-                        .addGap(18, 18, 18)
-                        .addComponent(lStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(12, 12, 12))
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -513,7 +517,15 @@ public class Leader extends javax.swing.JFrame {
             new String [] {
                 "Leader ID", "Fullname", "Age", "Gender", "Birthdate"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblLeader.setFocusable(false);
         tblLeader.getTableHeader().setReorderingAllowed(false);
         tblLeader.addMouseListener(new java.awt.event.MouseAdapter() {

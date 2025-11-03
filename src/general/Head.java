@@ -35,6 +35,7 @@ public class Head extends javax.swing.JFrame {
                    "JOIN Nation ON Heads.nationID = Nation.nationID;";
         try {
             cmbLeader.removeAllItems();
+            cmbNation.removeAllItems();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT fname, mi, lname FROM Leader");
             
@@ -111,6 +112,11 @@ public class Head extends javax.swing.JFrame {
                 pstmtMain.setObject(i + 1, params[i]);
             }
             pstmtMain.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Successfully added!");
+            txtElectID.setText("");
+            txtDepartment.setText("");
+            dtcDateFrom.setCalendar(null);
+            dtcDateTo.setCalendar(null);
             loadHeadData();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
@@ -190,6 +196,11 @@ public class Head extends javax.swing.JFrame {
                 pstmtMain.setObject(i + 1, params[i]);
             }
             pstmtMain.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Successfully added!");
+            txtElectID.setText("");
+            txtDepartment.setText("");
+            dtcDateFrom.setCalendar(null);
+            dtcDateTo.setCalendar(null);
             loadHeadData();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
@@ -211,7 +222,17 @@ public class Head extends javax.swing.JFrame {
                 fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
             }
 
-            String query = "SELECT * FROM Head";
+            String query = "SELECT " +
+                   "Heads.electID, " +
+                   "CONCAT(Leader.lname, ', ', Leader.fname, ' ', " +
+                   "IF(Leader.mi IS NOT NULL AND Leader.mi != '', CONCAT(Leader.mi, '.'), '')) AS fullname, " +
+                   "Nation.name AS nation, " +
+                   "Heads.department, " +
+                   "Heads.date_from, " +
+                   "Heads.date_to " +
+                   "FROM Heads " +
+                   "JOIN Leader ON Heads.leaderID = Leader.leaderID " +
+                   "JOIN Nation ON Heads.nationID = Nation.nationID;";
 
             try (
                 Connection con = DBConnection.getConnection();
@@ -406,9 +427,9 @@ public class Head extends javax.swing.JFrame {
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(FieldsLayout.createSequentialGroup()
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(electIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(electIDLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -461,7 +482,15 @@ public class Head extends javax.swing.JFrame {
             new String [] {
                 "ElectID", "Leader", "Nation", "Department", "Date to", "Date from"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblHead.setFocusable(false);
         tblHead.getTableHeader().setReorderingAllowed(false);
         tblHead.addMouseListener(new java.awt.event.MouseAdapter() {
