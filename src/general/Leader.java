@@ -1,61 +1,253 @@
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package general;
 
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import database.DBConnection;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import javax.swing.*;
+import javax.swing.table.*;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  *
  * @author lenovo
  */
-public class MainFrame extends javax.swing.JFrame {
-    private ImageIcon icon = new ImageIcon("src\\img\\world_leader.png");
+public class Leader extends javax.swing.JFrame {
+    private final ImageIcon icon = new ImageIcon("src\\img\\world_leader.png");
+    
+    
+    private void loadLeaderData(){
+        Connection con = (Connection) DBConnection.getConnection();
+        Statement stmt;
+        try {
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Leader");
+            DefaultTableModel model = (DefaultTableModel) tblLeader.getModel();
+            model.setRowCount(0);
+            
+            
+            while (rs.next()) {
+                String id = rs.getString("leaderID");
+                String fname = rs.getString("fname");
+                String mi = rs.getString("mi");
+                String lname = rs.getString("lname");
+                Date date = rs.getDate("bdate");
+                int age = rs.getInt("age");
+                String gender = rs.getString("gender");
+                
+                String full_name = lname + ", " + fname + " " + (mi.isEmpty()?"":mi+".");
+                Object[] row = {id, full_name, age, gender, date};
+                model.addRow(row);
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Connection failed! " + ex.getMessage());
+        }
+    }
+    
+    private void addLeader(){
+        String leaderID = txtLID.getText();
+        String fname = txtFN.getText();
+        String mi = txtMI.getText();
+        String lname = txtLN.getText();
+        int age = 0;
+        String gender = cmbGender.getSelectedItem().toString();
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = date_format.format(dcBirthdate.getDate());
+        
+        try {
+            age = Integer.parseInt(txtAge.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Field must be a number.");
+        }
+
+        try {
+            
+            String sql = "INSERT INTO Leader(leaderID, fname, mi, lname, bdate, age, gender) values (?, ?, ?, ?, ?, ?, ?)";
+            
+            Connection con = (Connection) DBConnection.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            
+            Object[] params = {leaderID, fname, mi, lname, date, age, gender};
+            
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+            pstmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Record added successfully!");
+            txtLID.setText("");
+            txtFN.setText("");
+            txtMI.setText("");
+            txtLN.setText("");
+            txtAge.setText("");
+            
+            loadLeaderData();
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+        }
+    }
+    private void deleteLeader(){
+        int selectedRow = tblLeader.getSelectedRow();
+        String id = (String) tblLeader.getValueAt(selectedRow, 0);
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+        }
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this student?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION
+        );
+        if(confirm == JOptionPane.YES_OPTION) {
+            Connection con = (Connection) DBConnection.getConnection();
+            try {
+                String sql = "DELETE FROM Leader WHERE leaderID = ?";
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setString(1, id);
+                int rowsDeleted = pstmt.executeUpdate();
+
+                if (rowsDeleted > 0) {
+                    JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+                    con.close();
+                    loadLeaderData();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                }
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
+            }
+        }
+    }
+    private void updateLeader(){
+        if (txtFN.getText().trim().isEmpty() || 
+            txtMI.getText().trim().isEmpty() ||
+            txtLN.getText().trim().isEmpty() ||
+            txtLID.getText().trim().isEmpty() ||
+            txtAge.getText().trim().isEmpty()
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+            return;
+        }
+        String leaderID = txtLID.getText();
+        String fname = txtFN.getText();
+        String mi = txtMI.getText();
+        String lname = txtLN.getText();
+        int age = 0;
+        String gender = cmbGender.getSelectedItem().toString();
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = date_format.format(dcBirthdate.getDate());
+        int selectedRow = tblLeader.getSelectedRow();
+        String id = (String) tblLeader.getValueAt(selectedRow, 0);
+        System.out.println(selectedRow);
+        System.out.println(id);
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+        }
+        try {
+            age = Integer.parseInt(txtAge.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Field must be a number.");
+        }
+        
+        Connection con = (Connection) DBConnection.getConnection();
+        try {
+            String sql = "UPDATE Leader SET leaderID=?, fname=?, mi=?,lname=?, bdate=?, age=?, gender=? WHERE leaderID=?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            Object[] params = {leaderID, fname, mi, lname, date, age, gender, id};
+
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+            pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+            txtLID.setText("");
+            txtFN.setText("");
+            txtMI.setText("");
+            txtLN.setText("");
+            txtAge.setText("");
+            con.close();
+            loadLeaderData();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+        }
+        
+    }
+    
+    private void exportData() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save Excel File");
+
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new java.util.Date());
+        chooser.setSelectedFile(new java.io.File("leader_list_" + timestamp + ".xlsx"));
+        int userSelection = chooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = chooser.getSelectedFile();
+            if (!fileToSave.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
+            }
+
+            String query = "SELECT * FROM Leader";
+
+            try (
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()
+            ) {
+                Sheet sheet = (Sheet) workbook.createSheet("Leader List");
+
+                ResultSetMetaData meta = rs.getMetaData();
+                int columnCount = meta.getColumnCount();
+                org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+                for (int i = 1; i <= columnCount; i++) {
+                    headerRow.createCell(i - 1).setCellValue(meta.getColumnName(i));
+                }
+
+                int rowIndex = 1;
+                while (rs.next()) {
+                    org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowIndex++);
+                    for (int i = 1; i <= columnCount; i++) {
+                        Object value = rs.getObject(i);
+                        row.createCell(i - 1).setCellValue(value != null ? value.toString() : "");
+                    }
+                }
+
+                for (int i = 0; i < columnCount; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                    workbook.write(fileOut);
+                }
+
+                JOptionPane.showMessageDialog(this,
+                    "Data exported successfully to:\n" + fileToSave.getAbsolutePath());
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error exporting data: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     /**
      * Creates new form MainFrame
      */
-    private void addData() {
-    if (txtFN.getText().isEmpty() || txtMI.getText().isEmpty() || txtLN.getText().isEmpty() ||
-        txtLID.getText().isEmpty() || txtAge.getText().isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Please fill all fields!");
-        return;
-    }
-
-  
-    String leaderFN = txtFN.getText();
-    String leaderMI = txtMI.getText();
-    String leaderLN = txtLN.getText();
-    String gender = cmbGender.getSelectedItem().toString();
-
-    
-    int leaderID;
-    int leaderAge;
-
-    try {
-        leaderID = Integer.parseInt(txtLID.getText());
-        leaderAge = Integer.parseInt(txtAge.getText());
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(null, "Leader ID and Age must be numbers!");
-        return; 
-    }
-    
-    
-    
-    
-    
-
-}
-
-      
-  
-    public MainFrame() {
+    public Leader() {
         initComponents();
         this.setIconImage(icon.getImage());
 
         this.setLocationRelativeTo(null);
+        loadLeaderData();
     }
 
     /**
@@ -95,7 +287,7 @@ public class MainFrame extends javax.swing.JFrame {
         dcBirthdate = new com.toedter.calendar.JDateChooser();
         List = new javax.swing.JPanel();
         theTable = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblLeader = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("World Leaders Tracker");
@@ -120,7 +312,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         LeaderList.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         LeaderList.setForeground(new java.awt.Color(0, 0, 0));
-        LeaderList.setText("/  Assign Leader");
+        LeaderList.setText("/  Leader");
 
         btnNation.setText("Go to Nation List");
         btnNation.setFocusable(false);
@@ -181,7 +373,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         lGender.setText("Gender");
 
-        cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Famale" }));
+        cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
         cmbGender.setFocusable(false);
         cmbGender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,6 +416,9 @@ public class MainFrame extends javax.swing.JFrame {
         lStatus.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lStatus.setText("None");
 
+        dcBirthdate.setAutoscrolls(true);
+        dcBirthdate.setFocusable(false);
+
         javax.swing.GroupLayout FieldsLayout = new javax.swing.GroupLayout(Fields);
         Fields.setLayout(FieldsLayout);
         FieldsLayout.setHorizontalGroup(
@@ -256,8 +451,8 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(lSelectedLeadID)
-                        .addGap(26, 26, 26)
-                        .addComponent(lStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(lStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -311,29 +506,28 @@ public class MainFrame extends javax.swing.JFrame {
 
         List.setBorder(javax.swing.BorderFactory.createTitledBorder("List"));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblLeader.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Leader ID", "Fullname", "Address", "Gender", "Birthdate"
+                "Leader ID", "Fullname", "Age", "Gender", "Birthdate"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        ));
+        tblLeader.setFocusable(false);
+        tblLeader.getTableHeader().setReorderingAllowed(false);
+        tblLeader.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblLeaderMouseClicked(evt);
             }
         });
-        theTable.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(130);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(110);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(5);
-            jTable1.getColumnModel().getColumn(4).setPreferredWidth(30);
+        theTable.setViewportView(tblLeader);
+        if (tblLeader.getColumnModel().getColumnCount() > 0) {
+            tblLeader.getColumnModel().getColumn(0).setPreferredWidth(10);
+            tblLeader.getColumnModel().getColumn(1).setPreferredWidth(130);
+            tblLeader.getColumnModel().getColumn(2).setPreferredWidth(25);
+            tblLeader.getColumnModel().getColumn(3).setPreferredWidth(5);
+            tblLeader.getColumnModel().getColumn(4).setPreferredWidth(50);
         }
 
         javax.swing.GroupLayout ListLayout = new javax.swing.GroupLayout(List);
@@ -350,7 +544,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(ListLayout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addComponent(theTable)
-                .addGap(5, 5, 5))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout DashboardLayout = new javax.swing.GroupLayout(Dashboard);
@@ -425,6 +619,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnNationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNationActionPerformed
         // TODO add your handling code here:
+        Nation nation = new Nation();
+        nation.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnNationActionPerformed
 
     private void txtLIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLIDActionPerformed
@@ -432,7 +629,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_txtLIDActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        // TODO add your handling code here:
+        exportData();
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void txtLNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLNActionPerformed
@@ -456,17 +653,22 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cmbGenderActionPerformed
 
     private void btnSaveRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRecordActionPerformed
-        // TODO add your handling code here:
-        addData();
+        addLeader();
     }//GEN-LAST:event_btnSaveRecordActionPerformed
 
     private void btnDeleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteRecordActionPerformed
-        // TODO add your handling code here:
+        deleteLeader();
     }//GEN-LAST:event_btnDeleteRecordActionPerformed
 
     private void btnUpdateRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateRecordActionPerformed
-        // TODO add your handling code here:
+        updateLeader();
     }//GEN-LAST:event_btnUpdateRecordActionPerformed
+
+    private void tblLeaderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLeaderMouseClicked
+        int selectedRow = tblLeader.getSelectedRow();
+        String id = (String) tblLeader.getValueAt(selectedRow, 0);
+        lStatus.setText(id);
+    }//GEN-LAST:event_tblLeaderMouseClicked
 
     /**
      * @param args the command line arguments
@@ -485,20 +687,21 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Leader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Leader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Leader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Leader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                new Leader().setVisible(true);
             }
         });
     }
@@ -517,7 +720,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnUpdateRecord;
     private javax.swing.JComboBox<String> cmbGender;
     private com.toedter.calendar.JDateChooser dcBirthdate;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lAge;
     private javax.swing.JLabel lBirthdate;
     private javax.swing.JLabel lFirstName;
@@ -527,6 +729,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lMiddleIni;
     private javax.swing.JLabel lSelectedLeadID;
     private javax.swing.JLabel lStatus;
+    private javax.swing.JTable tblLeader;
     private javax.swing.JScrollPane theTable;
     private javax.swing.JTextField txtAge;
     private javax.swing.JTextField txtFN;

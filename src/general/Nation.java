@@ -1,20 +1,235 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package general;
+
+import database.DBConnection;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 
 /**
  *
  * @author lenovo
  */
 public class Nation extends javax.swing.JFrame {
-
+    private final ImageIcon img = new ImageIcon("src\\img\\world_leader.png");
     /**
-     * Creates new form MainFrame
+     * Creates new form Leader
      */
+    
+    private void loadNationData(){
+        Connection con = (Connection) DBConnection.getConnection();
+        Statement stmt;
+        try {
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Nation");
+            
+            DefaultTableModel model = (DefaultTableModel) tblNation.getModel();
+            model.setRowCount(0);
+            
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getString("nationID"),
+                    rs.getString("name"),
+                    rs.getString("continent"),
+                    rs.getLong("population_count"),
+                    rs.getInt("year_established"),
+                };
+                model.addRow(row);
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Connection failed! " + ex.getMessage());
+        }
+    }
+    
+    private void addNation(){
+        String nationID = txtNationID.getText().trim();
+        String name = txtName.getText().trim();
+        String continent = txtContinent.getText().trim();
+        long population_count = 0;
+        int yearEstablished = yearChooser.getYear();
+        
+        try {
+            population_count = Long.parseLong(txtPopulation.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Field must be a number.");
+        }
+
+        try {
+            
+            String sql = "INSERT INTO Nation(nationID, name, continent, population_count, year_established) values (?, ?, ?, ?, ?)";
+            Connection con = (Connection) DBConnection.getConnection();
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            
+            Object[] params = {nationID, name, continent, population_count, yearEstablished};
+            
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+            pstmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Record added successfully!");
+            txtName.setText("");
+            txtNationID.setText("");
+            txtName.setText("");
+            txtContinent.setText("");
+            txtPopulation.setText("");
+            yearChooser.setYear(2025);
+            loadNationData();
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+        }
+    }
+    
+    private void deleteNation(){
+        int selectedRow = tblNation.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+        }
+        
+        String id = (String) tblNation.getValueAt(selectedRow, 0);
+        
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this student?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION
+        );
+        
+        if(confirm == JOptionPane.YES_OPTION) {
+            Connection con = (Connection) DBConnection.getConnection();
+            try {
+                String sql = "DELETE FROM Nation WHERE nationID = ?";
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setString(1, id);
+                int rowsDeleted = pstmt.executeUpdate();
+
+                if (rowsDeleted > 0) {
+                    JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+                    con.close();
+                    loadNationData();
+                    nationIDLabel.setText("None");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                }
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
+            }
+        }
+    }
+    
+    private void updateNation(){
+        String nationID = txtNationID.getText();
+        String name = txtName.getText();
+        String continent = txtContinent.getText();
+        long population_count = 0;
+        int yearEstablished = yearChooser.getYear();
+        int selectedRow = tblNation.getSelectedRow();
+        String id = (String) tblNation.getValueAt(selectedRow, 0);
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+        }
+        
+        try {
+            population_count = Long.parseLong(txtPopulation.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Field must be a number.");
+        }
+        Connection con = (Connection) DBConnection.getConnection();
+        try {
+            String sql = "UPDATE Nation SET nationID=?, name=?, continent=?, population_count=?, year_established=? WHERE nationID =?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            Object[] params = {nationID, name, continent, population_count, yearEstablished, id};
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+            pstmt.executeUpdate();
+            loadNationData();
+            JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+            txtNationID.setText("");
+            txtName.setText("");
+            txtContinent.setText("");
+            txtPopulation.setText("");
+            yearChooser.setYear(2025);
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+        }
+    }
+    
+    private void exportData() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save Excel File");
+
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new java.util.Date());
+        chooser.setSelectedFile(new java.io.File("nation_list_" + timestamp + ".xlsx"));
+        int userSelection = chooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = chooser.getSelectedFile();
+            if (!fileToSave.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
+            }
+
+            String query = "SELECT * FROM Nation";
+
+            try (
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()
+            ) {
+                Sheet sheet = (Sheet) workbook.createSheet("Nation List");
+
+                ResultSetMetaData meta = rs.getMetaData();
+                int columnCount = meta.getColumnCount();
+                org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+                for (int i = 1; i <= columnCount; i++) {
+                    headerRow.createCell(i - 1).setCellValue(meta.getColumnName(i));
+                }
+
+                int rowIndex = 1;
+                while (rs.next()) {
+                    org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowIndex++);
+                    for (int i = 1; i <= columnCount; i++) {
+                        Object value = rs.getObject(i);
+                        row.createCell(i - 1).setCellValue(value != null ? value.toString() : "");
+                    }
+                }
+
+                for (int i = 0; i < columnCount; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                    workbook.write(fileOut);
+                }
+
+                JOptionPane.showMessageDialog(this,
+                    "Data exported successfully to:\n" + fileToSave.getAbsolutePath());
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error exporting data: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     public Nation() {
         initComponents();
+        this.setIconImage(img.getImage());
+        this.setLocationRelativeTo(null);
+        loadNationData();
     }
 
     /**
@@ -38,21 +253,22 @@ public class Nation extends javax.swing.JFrame {
         btnDeleteRecord = new javax.swing.JButton();
         btnUpdateRecord = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        nationIDLabel = new javax.swing.JLabel();
         txtPopulation = new javax.swing.JTextField();
         txtContinent = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jYearChooser1 = new com.toedter.calendar.JYearChooser();
+        yearChooser = new com.toedter.calendar.JYearChooser();
         List = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblNation = new javax.swing.JTable();
         btnDepartment = new javax.swing.JButton();
         btnLeader = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("World Leaders Tracker");
 
         Dashboard.setBorder(javax.swing.BorderFactory.createTitledBorder("Dashboard"));
 
@@ -110,8 +326,8 @@ public class Nation extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Select Nation ID:  ");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setText("None");
+        nationIDLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nationIDLabel.setText("None");
 
         txtPopulation.setPreferredSize(new java.awt.Dimension(65, 25));
         txtPopulation.addActionListener(new java.awt.event.ActionListener() {
@@ -131,8 +347,8 @@ public class Nation extends javax.swing.JFrame {
 
         jLabel7.setText("Population Count");
 
-        jYearChooser1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jYearChooser1.setHorizontalAlignment(0);
+        yearChooser.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        yearChooser.setHorizontalAlignment(0);
 
         javax.swing.GroupLayout FieldsLayout = new javax.swing.GroupLayout(Fields);
         Fields.setLayout(FieldsLayout);
@@ -141,26 +357,27 @@ public class Nation extends javax.swing.JFrame {
             .addGroup(FieldsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jYearChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .addComponent(yearChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(btnSaveRecord, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(txtNationID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(btnUpdateRecord, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(txtPopulation, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addComponent(txtContinent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .addComponent(btnDeleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                     .addGroup(FieldsLayout.createSequentialGroup()
                         .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(FieldsLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(btnDeleteRecord, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                    .addGroup(FieldsLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nationIDLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         FieldsLayout.setVerticalGroup(
@@ -184,12 +401,12 @@ public class Nation extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jYearChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addComponent(yearChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(FieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                    .addComponent(nationIDLabel))
+                .addGap(18, 18, 18)
                 .addComponent(btnSaveRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnUpdateRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -200,7 +417,7 @@ public class Nation extends javax.swing.JFrame {
 
         List.setBorder(javax.swing.BorderFactory.createTitledBorder("List"));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblNation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -208,9 +425,22 @@ public class Nation extends javax.swing.JFrame {
                 "Nation ID", "Name", "Continent", "Population Count", "Year Established"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(170);
+        tblNation.setFocusable(false);
+        tblNation.getTableHeader().setReorderingAllowed(false);
+        tblNation.setUpdateSelectionOnSort(false);
+        tblNation.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tblNationFocusGained(evt);
+            }
+        });
+        tblNation.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNationMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblNation);
+        if (tblNation.getColumnModel().getColumnCount() > 0) {
+            tblNation.getColumnModel().getColumn(1).setPreferredWidth(170);
         }
 
         javax.swing.GroupLayout ListLayout = new javax.swing.GroupLayout(List);
@@ -225,7 +455,7 @@ public class Nation extends javax.swing.JFrame {
         ListLayout.setVerticalGroup(
             ListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ListLayout.createSequentialGroup()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -297,8 +527,8 @@ public class Nation extends javax.swing.JFrame {
                         .addComponent(jLabel8)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Fields, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(List, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(List, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Fields, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 8, Short.MAX_VALUE))
         );
 
@@ -323,11 +553,15 @@ public class Nation extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartmentActionPerformed
-        // TODO add your handling code here:
+        Head head = new Head();
+        head.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnDepartmentActionPerformed
 
     private void btnLeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeaderActionPerformed
-        // TODO add your handling code here:
+        Leader leader = new Leader();
+        leader.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnLeaderActionPerformed
 
     private void txtNationIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNationIDActionPerformed
@@ -339,11 +573,11 @@ public class Nation extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNameActionPerformed
 
     private void btnUpdateRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateRecordActionPerformed
-        // TODO add your handling code here:
+        updateNation();
     }//GEN-LAST:event_btnUpdateRecordActionPerformed
 
     private void btnDeleteRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteRecordActionPerformed
-        // TODO add your handling code here:
+        deleteNation();
     }//GEN-LAST:event_btnDeleteRecordActionPerformed
 
     private void txtPopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPopulationActionPerformed
@@ -355,12 +589,22 @@ public class Nation extends javax.swing.JFrame {
     }//GEN-LAST:event_txtContinentActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        // TODO add your handling code here:
+        exportData();
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnSaveRecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRecordActionPerformed
-        // TODO add your handling code here:
+        addNation();
     }//GEN-LAST:event_btnSaveRecordActionPerformed
+
+    private void tblNationFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblNationFocusGained
+        
+    }//GEN-LAST:event_tblNationFocusGained
+
+    private void tblNationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNationMouseClicked
+        int selectedRow = tblNation.getSelectedRow();
+        String id = (String) tblNation.getValueAt(selectedRow, 0);
+        nationIDLabel.setText(id);
+    }//GEN-LAST:event_tblNationMouseClicked
 
     /**
      * @param args the command line arguments
@@ -415,16 +659,16 @@ public class Nation extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private com.toedter.calendar.JYearChooser jYearChooser1;
+    private javax.swing.JLabel nationIDLabel;
+    private javax.swing.JTable tblNation;
     private javax.swing.JTextField txtContinent;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtNationID;
     private javax.swing.JTextField txtPopulation;
+    private com.toedter.calendar.JYearChooser yearChooser;
     // End of variables declaration//GEN-END:variables
 }
