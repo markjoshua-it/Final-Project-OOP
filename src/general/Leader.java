@@ -41,7 +41,13 @@ public class Leader extends javax.swing.JFrame {
                 Object[] row = {id, full_name, age, gender, date};
                 model.addRow(row);
             }
-
+            lStatus.setText("None");
+            txtLID.setText("");
+            txtFN.setText("");
+            txtMI.setText("");
+            txtLN.setText("");
+            txtAge.setText("");
+            dcBirthdate.setCalendar(null);
             con.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Connection failed! " + ex.getMessage());
@@ -78,14 +84,7 @@ public class Leader extends javax.swing.JFrame {
             }
             pstmt.executeUpdate();
             
-            JOptionPane.showMessageDialog(this, "Record added successfully!");
-            txtLID.setText("");
-            txtFN.setText("");
-            txtMI.setText("");
-            txtLN.setText("");
-            txtAge.setText("");
-            dcBirthdate.setCalendar(null);
-            
+            JOptionPane.showMessageDialog(this, "Record added successfully!");        
             loadLeaderData();
             con.close();
         } catch (SQLException ex) {
@@ -165,12 +164,6 @@ public class Leader extends javax.swing.JFrame {
                     }
                     pstmt.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Record updated successfully!");
-                    txtLID.setText("");
-                    txtFN.setText("");
-                    txtMI.setText("");
-                    txtLN.setText("");
-                    txtAge.setText("");
-                    dcBirthdate.setCalendar(null);
                     con.close();
                     loadLeaderData();
                 } catch (SQLException ex) {

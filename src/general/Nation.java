@@ -41,7 +41,13 @@ public class Nation extends javax.swing.JFrame {
                 };
                 model.addRow(row);
             }
-
+            nationIDLabel.setText("None");
+            txtName.setText("");
+            txtNationID.setText("");
+            txtName.setText("");
+            txtContinent.setText("");
+            txtPopulation.setText("");
+            yearChooser.setYear(2025);
             con.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Connection failed! " + ex.getMessage());
@@ -75,12 +81,7 @@ public class Nation extends javax.swing.JFrame {
             pstmt.executeUpdate();
             
             JOptionPane.showMessageDialog(this, "Record added successfully!");
-            txtName.setText("");
-            txtNationID.setText("");
-            txtName.setText("");
-            txtContinent.setText("");
-            txtPopulation.setText("");
-            yearChooser.setYear(2025);
+            
             loadNationData();
             con.close();
         } catch (SQLException ex) {
@@ -116,11 +117,9 @@ public class Nation extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Record deleted successfully!");
                     con.close();
                     loadNationData();
-                    nationIDLabel.setText("None");
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to delete record.");
                 }
-                
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
             }
@@ -156,11 +155,6 @@ public class Nation extends javax.swing.JFrame {
             pstmt.executeUpdate();
             loadNationData();
             JOptionPane.showMessageDialog(this, "Record updated successfully!");
-            txtNationID.setText("");
-            txtName.setText("");
-            txtContinent.setText("");
-            txtPopulation.setText("");
-            yearChooser.setYear(2025);
             con.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());

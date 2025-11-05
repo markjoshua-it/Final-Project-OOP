@@ -1,5 +1,6 @@
 package general;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import database.DBConnection;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,7 +71,11 @@ public class Head extends javax.swing.JFrame {
                 };
                 model.addRow(row);
             }
-
+            electIDLabel.setText("None");
+            txtElectID.setText("");
+            txtDepartment.setText("");
+            dtcDateFrom.setCalendar(null);
+            dtcDateTo.setCalendar(null);
             con.close();
             
         } catch (SQLException ex) {
@@ -113,10 +118,6 @@ public class Head extends javax.swing.JFrame {
             }
             pstmtMain.executeUpdate();
             JOptionPane.showMessageDialog(this, "Successfully added!");
-            txtElectID.setText("");
-            txtDepartment.setText("");
-            dtcDateFrom.setCalendar(null);
-            dtcDateTo.setCalendar(null);
             loadHeadData();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
@@ -149,7 +150,6 @@ public class Head extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Record deleted successfully!");
                     con.close();
                     loadHeadData();
-                    electIDLabel.setText("None");
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to delete record.");
                 }
@@ -197,10 +197,6 @@ public class Head extends javax.swing.JFrame {
             }
             pstmtMain.executeUpdate();
             JOptionPane.showMessageDialog(this, "Successfully added!");
-            txtElectID.setText("");
-            txtDepartment.setText("");
-            dtcDateFrom.setCalendar(null);
-            dtcDateTo.setCalendar(null);
             loadHeadData();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
@@ -503,7 +499,9 @@ public class Head extends javax.swing.JFrame {
             tblHead.getColumnModel().getColumn(0).setPreferredWidth(40);
             tblHead.getColumnModel().getColumn(1).setPreferredWidth(100);
             tblHead.getColumnModel().getColumn(2).setPreferredWidth(75);
-            tblHead.getColumnModel().getColumn(3).setPreferredWidth(75);
+            tblHead.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tblHead.getColumnModel().getColumn(4).setPreferredWidth(30);
+            tblHead.getColumnModel().getColumn(5).setPreferredWidth(30);
         }
 
         javax.swing.GroupLayout ListLayout = new javax.swing.GroupLayout(List);
@@ -670,6 +668,13 @@ public class Head extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        
+        try {
+            FlatLightLaf.setup(); 
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+            ex.printStackTrace();
+        }
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
