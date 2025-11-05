@@ -84,78 +84,87 @@ public class Head extends javax.swing.JFrame {
         
     }
     private void addHead(){
-        String electID = txtElectID.getText();
-        String department = txtDepartment.getText();
+        String electID = txtElectID.getText().trim();
+        String department = txtDepartment.getText().trim();
         String leader = cmbLeader.getSelectedItem().toString();
         String nation = cmbNation.getSelectedItem().toString();
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-        String dateFrom = date_format.format(dtcDateFrom.getDate());
-        String dateTo = date_format.format(dtcDateTo.getDate());
+        
+        if(txtElectID.getText().trim().isEmpty() ||
+           txtDepartment.getText().trim().isEmpty() ||
+           dtcDateFrom.getDate() == null ||
+           dtcDateTo.getDate() == null
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        } else{
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+            String dateFrom = date_format.format(dtcDateFrom.getDate());
+            String dateTo = date_format.format(dtcDateTo.getDate());
+            String sql = "INSERT INTO Heads(electID, leaderID, nationID, department, date_from, date_to) values (?, ?, ?, ?, ?, ?)";
+            String query = "SELECT nationId from Nation where name=?;";
+            String query2 = "Select leaderID FROM Leader WHERE CONCAT(lname, ', ', fname, ' ', IF(mi IS NOT NULL AND mi!='', CONCAT(mi, '.'), ''))=?";
+            Connection con = (Connection) DBConnection.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setString(1, nation);
+                ResultSet rs = pstmt.executeQuery();
+                rs.next();
+                String nID = rs.getString("nationID");
 
-        String sql = "INSERT INTO Heads(electID, leaderID, nationID, department, date_from, date_to) values (?, ?, ?, ?, ?, ?)";
-        String query = "SELECT nationId from Nation where name=?;";
-        String query2 = "Select leaderID FROM Leader WHERE CONCAT(lname, ', ', fname, ' ', IF(mi IS NOT NULL AND mi!='', CONCAT(mi, '.'), ''))=?";
-        Connection con = (Connection) DBConnection.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, nation);
-            ResultSet rs = pstmt.executeQuery();
-            rs.next();
-            String nID = rs.getString("nationID");
-            
-            PreparedStatement pstmt2 = con.prepareStatement(query2);
-            pstmt2.setString(1, leader);
-            ResultSet rs2 = pstmt2.executeQuery();
-            rs2.next();
-            String lID = rs2.getString("leaderID");
-            
-            Object[] params = {electID,  lID, nID, department, dateFrom, dateTo};
-            
-            PreparedStatement pstmtMain = con.prepareStatement(sql);
-            
-            for (int i = 0; i < params.length; i++) {
-                pstmtMain.setObject(i + 1, params[i]);
+                PreparedStatement pstmt2 = con.prepareStatement(query2);
+                pstmt2.setString(1, leader);
+                ResultSet rs2 = pstmt2.executeQuery();
+                rs2.next();
+                String lID = rs2.getString("leaderID");
+
+                Object[] params = {electID,  lID, nID, department, dateFrom, dateTo};
+
+                PreparedStatement pstmtMain = con.prepareStatement(sql);
+
+                for (int i = 0; i < params.length; i++) {
+                    pstmtMain.setObject(i + 1, params[i]);
+                }
+                pstmtMain.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Successfully added!");
+                loadHeadData();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
             }
-            pstmtMain.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Successfully added!");
-            loadHeadData();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
         }
+
     }
     
     private void deleteHead(){
         int selectedRow = tblHead.getSelectedRow();
-        String id = (String) tblHead.getValueAt(selectedRow, 0);
-        System.out.println(id);
         
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-        }
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this student?",
-            "Confirm Delete",
-            JOptionPane.YES_NO_OPTION
-        );
-        if(confirm == JOptionPane.YES_OPTION) {
-            Connection con = (Connection) DBConnection.getConnection();
-            try {
-                String sql = "DELETE FROM Heads WHERE electID = ?";
-                PreparedStatement pstmt = con.prepareStatement(sql);
-                pstmt.setString(1, id);
-                int rowsDeleted = pstmt.executeUpdate();
+        } else {
+            String id = (String) tblHead.getValueAt(selectedRow, 0);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this student?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+            );
+            if(confirm == JOptionPane.YES_OPTION) {
+                Connection con = (Connection) DBConnection.getConnection();
+                try {
+                    String sql = "DELETE FROM Heads WHERE electID = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setString(1, id);
+                    int rowsDeleted = pstmt.executeUpdate();
 
-                if (rowsDeleted > 0) {
-                    JOptionPane.showMessageDialog(this, "Record deleted successfully!");
-                    con.close();
-                    loadHeadData();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                    if (rowsDeleted > 0) {
+                        JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+                        con.close();
+                        loadHeadData();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
                 }
-                
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
             }
         }
     }
@@ -165,43 +174,55 @@ public class Head extends javax.swing.JFrame {
         String department = txtDepartment.getText();
         String leader = cmbLeader.getSelectedItem().toString();
         String nation = cmbNation.getSelectedItem().toString();
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-        String dateFrom = date_format.format(dtcDateFrom.getDate());
-        String dateTo = date_format.format(dtcDateTo.getDate());
         int selectedRow = tblHead.getSelectedRow();
-        String id = (String) tblHead.getValueAt(selectedRow, 0);
         
-        String sql = "UPDATE Heads SET electID=?, leaderID=?, nationID=?, department=?, date_from=?, date_to=?";
-        String query = "SELECT nationId from Nation where name=?;";
-        String query2 = "Select leaderID FROM Leader WHERE CONCAT(lname, ', ', fname, ' ', IF(mi IS NOT NULL AND mi!='', CONCAT(mi, '.'), ''))=?";
-        Connection con = (Connection) DBConnection.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, nation);
-            ResultSet rs = pstmt.executeQuery();
-            rs.next();
-            String nID = rs.getString("nationID");
-            
-            PreparedStatement pstmt2 = con.prepareStatement(query2);
-            pstmt2.setString(1, leader);
-            ResultSet rs2 = pstmt2.executeQuery();
-            rs2.next();
-            String lID = rs2.getString("leaderID");
-            
-            Object[] params = {electID,  lID, nID, department, dateFrom, dateTo};
-            
-            PreparedStatement pstmtMain = con.prepareStatement(sql);
-            
-            for (int i = 0; i < params.length; i++) {
-                pstmtMain.setObject(i + 1, params[i]);
-            }
-            pstmtMain.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Successfully added!");
-            loadHeadData();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(this, "Please select a record to delete.");
+            return;
         }
         
+        if(txtElectID.getText().trim().isEmpty() ||
+           txtDepartment.getText().trim().isEmpty() ||
+           dtcDateFrom.getDate() == null ||
+           dtcDateTo.getDate() == null
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        } else{
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+            String dateFrom = date_format.format(dtcDateFrom.getDate());
+            String dateTo = date_format.format(dtcDateTo.getDate());
+            String id = (String) tblHead.getValueAt(selectedRow, 0);
+            String sql = "UPDATE Heads SET electID=?, leaderID=?, nationID=?, department=?, date_from=?, date_to=?";
+            String query = "SELECT nationId from Nation where name=?;";
+            String query2 = "Select leaderID FROM Leader WHERE CONCAT(lname, ', ', fname, ' ', IF(mi IS NOT NULL AND mi!='', CONCAT(mi, '.'), ''))=?";
+            Connection con = (Connection) DBConnection.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setString(1, nation);
+                ResultSet rs = pstmt.executeQuery();
+                rs.next();
+                String nID = rs.getString("nationID");
+
+                PreparedStatement pstmt2 = con.prepareStatement(query2);
+                pstmt2.setString(1, leader);
+                ResultSet rs2 = pstmt2.executeQuery();
+                rs2.next();
+                String lID = rs2.getString("leaderID");
+
+                Object[] params = {electID,  lID, nID, department, dateFrom, dateTo};
+
+                PreparedStatement pstmtMain = con.prepareStatement(sql);
+
+                for (int i = 0; i < params.length; i++) {
+                    pstmtMain.setObject(i + 1, params[i]);
+                }
+                pstmtMain.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Successfully added!");
+                loadHeadData();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+            }
+        }
     }
     
     private void exportData() {

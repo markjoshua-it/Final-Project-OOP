@@ -55,73 +55,84 @@ public class Leader extends javax.swing.JFrame {
     }
     
     private void addLeader(){
-        String leaderID = txtLID.getText();
-        String fname = txtFN.getText();
-        String mi = txtMI.getText();
-        String lname = txtLN.getText();
-        int age = 0;
-        String gender = cmbGender.getSelectedItem().toString();
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = date_format.format(dcBirthdate.getDate());
-        
-        try {
-            age = Integer.parseInt(txtAge.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Field must be a number.");
-        }
+        if (txtFN.getText().trim().isEmpty() || 
+            txtMI.getText().trim().isEmpty() ||
+            txtLN.getText().trim().isEmpty() ||
+            txtLID.getText().trim().isEmpty() ||
+            txtAge.getText().trim().isEmpty() ||
+            dcBirthdate.getDate() == null
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        } else{
+            String leaderID = txtLID.getText();
+            String fname = txtFN.getText();
+            String mi = txtMI.getText();
+            String lname = txtLN.getText();
+            int age = 0;
+            String gender = cmbGender.getSelectedItem().toString();
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+            String date = date_format.format(dcBirthdate.getDate());
 
-        try {
-            
-            String sql = "INSERT INTO Leader(leaderID, fname, mi, lname, bdate, age, gender) values (?, ?, ?, ?, ?, ?, ?)";
-            
-            Connection con = (Connection) DBConnection.getConnection();
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            
-            Object[] params = {leaderID, fname, mi, lname, date, age, gender};
-            
-            for (int i = 0; i < params.length; i++) {
-                pstmt.setObject(i + 1, params[i]);
+            try {
+                age = Integer.parseInt(txtAge.getText());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Field must be a number.");
             }
-            pstmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this, "Record added successfully!");        
-            loadLeaderData();
-            con.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+
+            try {
+
+                String sql = "INSERT INTO Leader(leaderID, fname, mi, lname, bdate, age, gender) values (?, ?, ?, ?, ?, ?, ?)";
+
+                Connection con = (Connection) DBConnection.getConnection();
+                PreparedStatement pstmt = con.prepareStatement(sql);
+
+                Object[] params = {leaderID, fname, mi, lname, date, age, gender};
+
+                for (int i = 0; i < params.length; i++) {
+                    pstmt.setObject(i + 1, params[i]);
+                }
+                pstmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Record added successfully!");        
+                loadLeaderData();
+                con.close();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+            }
         }
     }
     private void deleteLeader(){
         int selectedRow = tblLeader.getSelectedRow();
-        String id = (String) tblLeader.getValueAt(selectedRow, 0);
         
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-        }
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this student?",
-            "Confirm Delete",
-            JOptionPane.YES_NO_OPTION
-        );
-        if(confirm == JOptionPane.YES_OPTION) {
-            Connection con = (Connection) DBConnection.getConnection();
-            try {
-                String sql = "DELETE FROM Leader WHERE leaderID = ?";
-                PreparedStatement pstmt = con.prepareStatement(sql);
-                pstmt.setString(1, id);
-                int rowsDeleted = pstmt.executeUpdate();
+        } else{
+            String id = (String) tblLeader.getValueAt(selectedRow, 0);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this student?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+            );
+            if(confirm == JOptionPane.YES_OPTION) {
+                Connection con = (Connection) DBConnection.getConnection();
+                try {
+                    String sql = "DELETE FROM Leader WHERE leaderID = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setString(1, id);
+                    int rowsDeleted = pstmt.executeUpdate();
 
-                if (rowsDeleted > 0) {
-                    JOptionPane.showMessageDialog(this, "Record deleted successfully!");
-                    con.close();
-                    loadLeaderData();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                    if (rowsDeleted > 0) {
+                        JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+                        con.close();
+                        loadLeaderData();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
                 }
-                
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
             }
         }
     }
@@ -130,11 +141,11 @@ public class Leader extends javax.swing.JFrame {
             txtMI.getText().trim().isEmpty() ||
             txtLN.getText().trim().isEmpty() ||
             txtLID.getText().trim().isEmpty() ||
-            txtAge.getText().trim().isEmpty()
+            txtAge.getText().trim().isEmpty() ||
+            dcBirthdate.getDate() == null
         ){
             JOptionPane.showMessageDialog(null, "Please fill all fields!");
-            return;
-        }else{
+        } else{
             String leaderID = txtLID.getText();
             String fname = txtFN.getText();
             String mi = txtMI.getText();
@@ -144,37 +155,34 @@ public class Leader extends javax.swing.JFrame {
             SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
             String date = date_format.format(dcBirthdate.getDate());
             int selectedRow = tblLeader.getSelectedRow();
-            String id = (String) tblLeader.getValueAt(selectedRow, 0);
-            System.out.println(selectedRow);
-            System.out.println(id);
 
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-            }
-            try {
-                age = Integer.parseInt(txtAge.getText());
-                Connection con = (Connection) DBConnection.getConnection();
+            } else {
                 try {
-                    String sql = "UPDATE Leader SET leaderID=?, fname=?, mi=?,lname=?, bdate=?, age=?, gender=? WHERE leaderID=?";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    Object[] params = {leaderID, fname, mi, lname, date, age, gender, id};
+                    String id = (String) tblLeader.getValueAt(selectedRow, 0);
+                    age = Integer.parseInt(txtAge.getText());
+                    Connection con = (Connection) DBConnection.getConnection();
+                    try {
+                        String sql = "UPDATE Leader SET leaderID=?, fname=?, mi=?,lname=?, bdate=?, age=?, gender=? WHERE leaderID=?";
+                        PreparedStatement pstmt = con.prepareStatement(sql);
+                        Object[] params = {leaderID, fname, mi, lname, date, age, gender, id};
 
-                    for (int i = 0; i < params.length; i++) {
-                        pstmt.setObject(i + 1, params[i]);
+                        for (int i = 0; i < params.length; i++) {
+                            pstmt.setObject(i + 1, params[i]);
+                        }
+                        pstmt.executeUpdate();
+                        JOptionPane.showMessageDialog(this, "Record updated successfully!");
+                        con.close();
+                        loadLeaderData();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
                     }
-                    pstmt.executeUpdate();
-                    JOptionPane.showMessageDialog(this, "Record updated successfully!");
-                    con.close();
-                    loadLeaderData();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Field must be a number.");
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Field must be a number.");
             }
-
         }
-        
     }
     
     private void exportData() {

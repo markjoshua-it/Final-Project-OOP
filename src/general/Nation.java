@@ -61,31 +61,37 @@ public class Nation extends javax.swing.JFrame {
         long population_count = 0;
         int yearEstablished = yearChooser.getYear();
         
-        try {
-            population_count = Long.parseLong(txtPopulation.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Field must be a number.");
-        }
+        if(txtNationID.getText().trim().isEmpty() ||
+           txtName.getText().trim().isEmpty() ||
+           txtContinent.getText().trim().isEmpty() ||
+           txtPopulation.getText().trim().isEmpty()
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        } else{
+            try {
+                population_count = Long.parseLong(txtPopulation.getText());
+                try {
+                    String sql = "INSERT INTO Nation(nationID, name, continent, population_count, year_established) values (?, ?, ?, ?, ?)";
+                    Connection con = (Connection) DBConnection.getConnection();
+                    PreparedStatement pstmt = con.prepareStatement(sql);
 
-        try {
-            
-            String sql = "INSERT INTO Nation(nationID, name, continent, population_count, year_established) values (?, ?, ?, ?, ?)";
-            Connection con = (Connection) DBConnection.getConnection();
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            
-            Object[] params = {nationID, name, continent, population_count, yearEstablished};
-            
-            for (int i = 0; i < params.length; i++) {
-                pstmt.setObject(i + 1, params[i]);
+                    Object[] params = {nationID, name, continent, population_count, yearEstablished};
+
+                    for (int i = 0; i < params.length; i++) {
+                        pstmt.setObject(i + 1, params[i]);
+                    }
+                    pstmt.executeUpdate();
+
+                    JOptionPane.showMessageDialog(this, "Record added successfully!");
+
+                    loadNationData();
+                    con.close();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Field must be a number.");
             }
-            pstmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(this, "Record added successfully!");
-            
-            loadNationData();
-            con.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
         }
     }
     
@@ -94,34 +100,34 @@ public class Nation extends javax.swing.JFrame {
 
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-        }
-        
-        String id = (String) tblNation.getValueAt(selectedRow, 0);
-        
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this student?",
-            "Confirm Delete",
-            JOptionPane.YES_NO_OPTION
-        );
-        
-        if(confirm == JOptionPane.YES_OPTION) {
-            Connection con = (Connection) DBConnection.getConnection();
-            try {
-                String sql = "DELETE FROM Nation WHERE nationID = ?";
-                PreparedStatement pstmt = con.prepareStatement(sql);
-                pstmt.setString(1, id);
-                int rowsDeleted = pstmt.executeUpdate();
+        } else{
+            String id = (String) tblNation.getValueAt(selectedRow, 0);
 
-                if (rowsDeleted > 0) {
-                    JOptionPane.showMessageDialog(this, "Record deleted successfully!");
-                    con.close();
-                    loadNationData();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to delete record.");
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this student?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if(confirm == JOptionPane.YES_OPTION) {
+                Connection con = (Connection) DBConnection.getConnection();
+                try {
+                    String sql = "DELETE FROM Nation WHERE nationID = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setString(1, id);
+                    int rowsDeleted = pstmt.executeUpdate();
+
+                    if (rowsDeleted > 0) {
+                        JOptionPane.showMessageDialog(this, "Record deleted successfully!");
+                        con.close();
+                        loadNationData();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to delete record.");
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Database error! " + e.getMessage());
             }
         }
     }
@@ -133,31 +139,39 @@ public class Nation extends javax.swing.JFrame {
         long population_count = 0;
         int yearEstablished = yearChooser.getYear();
         int selectedRow = tblNation.getSelectedRow();
-        String id = (String) tblNation.getValueAt(selectedRow, 0);
         
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a record to delete.");
-        }
-        
-        try {
-            population_count = Long.parseLong(txtPopulation.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Field must be a number.");
-        }
-        Connection con = (Connection) DBConnection.getConnection();
-        try {
-            String sql = "UPDATE Nation SET nationID=?, name=?, continent=?, population_count=?, year_established=? WHERE nationID =?";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            Object[] params = {nationID, name, continent, population_count, yearEstablished, id};
-            for (int i = 0; i < params.length; i++) {
-                pstmt.setObject(i + 1, params[i]);
+            return;
+        } 
+        if(txtNationID.getText().trim().isEmpty() ||
+           txtName.getText().trim().isEmpty() ||
+           txtContinent.getText().trim().isEmpty() ||
+           txtPopulation.getText().trim().isEmpty()
+        ){
+            JOptionPane.showMessageDialog(null, "Please fill all fields!");
+        } else{
+            String id = (String) tblNation.getValueAt(selectedRow, 0);
+            try {
+                population_count = Long.parseLong(txtPopulation.getText());
+                Connection con = (Connection) DBConnection.getConnection();
+                try {
+                    String sql = "UPDATE Nation SET nationID=?, name=?, continent=?, population_count=?, year_established=? WHERE nationID =?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    Object[] params = {nationID, name, continent, population_count, yearEstablished, id};
+                    for (int i = 0; i < params.length; i++) {
+                        pstmt.setObject(i + 1, params[i]);
+                    }
+                    pstmt.executeUpdate();
+                    loadNationData();
+                    JOptionPane.showMessageDialog(this, "Record updated successfully!");
+                    con.close();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Field must be a number.");
             }
-            pstmt.executeUpdate();
-            loadNationData();
-            JOptionPane.showMessageDialog(this, "Record updated successfully!");
-            con.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
         }
     }
     
