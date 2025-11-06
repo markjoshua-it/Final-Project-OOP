@@ -1,6 +1,5 @@
 package general;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import database.DBConnection;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -192,7 +191,7 @@ public class Head extends javax.swing.JFrame {
             String dateFrom = date_format.format(dtcDateFrom.getDate());
             String dateTo = date_format.format(dtcDateTo.getDate());
             String id = (String) tblHead.getValueAt(selectedRow, 0);
-            String sql = "UPDATE Heads SET electID=?, leaderID=?, nationID=?, department=?, date_from=?, date_to=?";
+            String sql = "UPDATE Heads SET electID=?, leaderID=?, nationID=?, department=?, date_from=?, date_to=? WHERE electID=?";
             String query = "SELECT nationId from Nation where name=?;";
             String query2 = "Select leaderID FROM Leader WHERE CONCAT(lname, ', ', fname, ' ', IF(mi IS NOT NULL AND mi!='', CONCAT(mi, '.'), ''))=?";
             Connection con = (Connection) DBConnection.getConnection();
@@ -209,7 +208,7 @@ public class Head extends javax.swing.JFrame {
                 rs2.next();
                 String lID = rs2.getString("leaderID");
 
-                Object[] params = {electID,  lID, nID, department, dateFrom, dateTo};
+                Object[] params = {electID,  lID, nID, department, dateFrom, dateTo, id};
 
                 PreparedStatement pstmtMain = con.prepareStatement(sql);
 
@@ -217,7 +216,7 @@ public class Head extends javax.swing.JFrame {
                     pstmtMain.setObject(i + 1, params[i]);
                 }
                 pstmtMain.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Successfully added!");
+                JOptionPane.showMessageDialog(this, "Record updated successfully!");
                 loadHeadData();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Database error! " + ex.getMessage());
@@ -690,12 +689,6 @@ public class Head extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         
-        try {
-            FlatLightLaf.setup(); 
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize FlatLaf");
-            ex.printStackTrace();
-        }
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {

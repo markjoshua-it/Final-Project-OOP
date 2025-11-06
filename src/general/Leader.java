@@ -56,7 +56,6 @@ public class Leader extends javax.swing.JFrame {
     
     private void addLeader(){
         if (txtFN.getText().trim().isEmpty() || 
-            txtMI.getText().trim().isEmpty() ||
             txtLN.getText().trim().isEmpty() ||
             txtLID.getText().trim().isEmpty() ||
             txtAge.getText().trim().isEmpty() ||
@@ -138,7 +137,6 @@ public class Leader extends javax.swing.JFrame {
     }
     private void updateLeader(){
         if (txtFN.getText().trim().isEmpty() || 
-            txtMI.getText().trim().isEmpty() ||
             txtLN.getText().trim().isEmpty() ||
             txtLID.getText().trim().isEmpty() ||
             txtAge.getText().trim().isEmpty() ||
